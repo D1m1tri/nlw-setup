@@ -1,9 +1,10 @@
 import {useState} from "react";
-import {Text, ScrollView, TextInput, View, TouchableOpacity} from "react-native";
+import {Text, ScrollView, TextInput, View, TouchableOpacity, Alert} from "react-native";
 import {BackButton} from "../components/BackButton";
 import {Checkbox} from "../components/Checkbox";
 import {Feather} from "@expo/vector-icons"
 import colors from "tailwindcss/colors";
+import {api} from "../lib/axios";
 
 const availableWeekdays = [
 	'Domingo', 
@@ -16,6 +17,7 @@ const availableWeekdays = [
 ]
 
 export function New(){
+	const [title, setTitle] = useState('');
 	const [weekDays, setWeekDays] = useState<number[]>([]);
 
 	function handleToggleWeekDay(weekDayIndex: number){
@@ -25,6 +27,19 @@ export function New(){
 		else {
 			setWeekDays(prevState => [...prevState, weekDayIndex]);
 		}
+	}
+
+	async function handleCreateNewHabit() {
+		try {
+			if(!title.trim() || weekDays.length === 0 ){Alert.alert('Novo Hábito', 'Informe o nome do hábito e escolha a periodicidade.')}
+			await api.post('habits', { title, weekDays });
+		}catch (error){
+			console.log(error);
+			Alert.alert('Ops!', 'Não foi possível criar o novo hábito');
+		}
+		setTitle('');
+		setWeekDays([]);
+		Alert.alert("Novo hábito", "Novo hábito criado com sucesso!")
 	}
 
 	return (
@@ -42,6 +57,8 @@ export function New(){
 					className="h-12 pl-4 mt-3 text-white border-2 rounded-lg bg-zinc-900 border-zinc-800 focus:border-green-600" 
 					placeholder="Ex.: Exercícios, Dormir bem, etc."
 					placeholderTextColor={colors.zinc[400]}
+					onChangeText={setTitle}
+					value = {title}
 				/>
 				
 				<Text className="mt-4 mb-3 text-base font-semibold text-white">
@@ -62,6 +79,7 @@ export function New(){
 				<TouchableOpacity 
 					activeOpacity={0.7} 
 					className="flex-row items-center justify-center w-full mt-6 bg-green-600 h-14 rounded-md"
+					onPress={handleCreateNewHabit}
 				>
 					<Feather name="check" color={colors.white} size={20}/>
 					<Text className="ml-2 text-base font-semibold text-white">

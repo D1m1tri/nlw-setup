@@ -1,15 +1,14 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import {appRouts} from './routes'
+import {appRoutes} from './routes'
 
 const app = Fastify()
 
 app.register(cors)
-app.register(appRouts)
+app.register(appRoutes)
 
 
-app.listen({
-	port: 3333,
-}).then(()=>{
-	console.log('Server running on localhost with port 3333')
+app.listen(3333, '192.168.0.5', (err) =>{
+	if (err) throw err
+	console.log(`server listening on ${app.server.address().address}:${app.server.address().port}`)
 })
