@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import {View, Text, ScrollView, Alert } from "react-native";
 import { api } from "../lib/axios";
 import dayjs from "dayjs";
@@ -7,7 +7,7 @@ import { generateDatesFromYearBeginning } from '../utils/generate-dates-from-yea
 
 import {HabitDay, DAY_SIZE} from "../components/HabitDay";
 import {Header} from "../components/Header";
-import {useNavigation} from "@react-navigation/native";
+import {useNavigation, useFocusEffect} from "@react-navigation/native";
 import { Loading } from "../components/loading";
 
 const weekDays = ['D','S','T','Q','Q','S','S'];
@@ -35,16 +35,16 @@ export function Home () {
 			console.log(response.data);
 			setSummary(response.data)
 		} catch (error) {
-			Alert.alert('Ops!','Não foi possível carregar o sumário de hábitos... :(');
+			Alert.alert('Ops!','Não foi possível carregar o sumário de hábitos... Seu computador está ligado?');
 			console.log(error);
 		} finally {
 			setLoading(false);
 		}
 	}
 	
-	useEffect(() => {
+	useFocusEffect(useCallback(() => {
 		fetchData();
-	},[]);
+	},[]));
 
 	if(loading){
 		return(

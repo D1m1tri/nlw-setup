@@ -8,7 +8,9 @@ app.register(cors)
 app.register(appRoutes)
 
 
-app.listen(3333, '192.168.0.5', (err) =>{
-	if (err) throw err
-	console.log(`server listening on ${app.server.address().address}:${app.server.address().port}`)
+app.listen({
+	port:3333,
+	host: '0.0.0.0',
+}).then((url) => {
+	console.log(`servidor rodando em ${url}`)
 })
